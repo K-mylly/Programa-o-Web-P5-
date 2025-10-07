@@ -1,0 +1,44 @@
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.use((req, res, next) => {
+  console.log(`Acesso à rota: ${req.url} - Método: ${req.method}`)
+  next()
+})
+
+const indexMiddleware = (req, res) => {
+  res.send('<h1>Página Inicial</h1><a href="/signin">Ir para Signin</a>')
+}
+
+const signinMiddleware = (req, res) => {
+  res.send('<h1>Página de Login</h1><a href="/signup">Ir para Signup</a>')
+}
+
+const signupMiddleware = (req, res) => {
+  res.send('<h1>Página de Cadastro</h1><a href="/">Voltar ao Início</a>')
+}
+
+app.get('/', indexMiddleware)
+app.get('/signin', signinMiddleware)
+app.get('/signup', signupMiddleware)
+
+app.get('/users/:userid?', (req, res) => {
+  const { userid } = req.params
+  if (userid) {
+    res.send(`<h1>Bem-vindo, ${userid}!</h1><a href="/">Voltar ao Início</a>`)
+  } else {
+    res.redirect('/signup')
+  }
+})
+
+app.use((req, res) => {
+  res.status(404).send(`
+    <h1>Erro 404 - Página não encontrada</h1>
+    <a href="/">Voltar ao Início</a>
+  `)
+})
+
+app.listen(port, () => {
+  console.log(`Servidor rodando em http://localhost:${port}`)
+})
