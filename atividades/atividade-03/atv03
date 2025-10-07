@@ -1,0 +1,45 @@
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.use((req, res, next) => {
+  console.log(`Acesso à página: ${req.url}`);
+  next();
+});
+
+const router = express.Router();
+
+router.get('/', (req, res) => {
+  res.send('Página: index');
+});
+
+router.get('/signup', (req, res) => {
+  res.send('Página: signup');
+});
+
+router.get('/signin', (req, res) => {
+  res.send('Página: signin');
+});
+
+router.get('/users/:userid', (req, res) => {
+  const userId = req.params.userid;
+  if (userId) {
+    res.send(`Bem-vindo, usuário ${userId}!`);
+  } else {
+    res.redirect('/signup');
+  }
+});
+
+router.get('/users', (req, res) => {
+  res.redirect('/signup');
+});
+
+router.use((req, res) => {
+  res.status(404).send('Erro 404 - Página não encontrada. <a href="/">Voltar para Index</a>');
+});
+
+app.use('/', router);
+
+app.listen(port, () => {
+  console.log(`Servidor rodando em http://localhost:${port}`);
+});
